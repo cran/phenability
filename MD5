@@ -1,0 +1,13 @@
+0481d54a6170c6475ecc72e4f46249db *DESCRIPTION
+b3d49aa93248771763b2bdc3c27dc1b1 *NAMESPACE
+1b917939a75989c3da2a38c8ab2ff4c3 *R/fox.R
+c1d7fb2749d6274f1fa394d424c2f37c *R/kang.R
+498c7a1461dbe8e5cddda0ac64938501 *R/nahu.R
+be626d5145c3b8a5ca8853fb12adaa4e *R/thsu.R
+e4fde1547ee446a4f0c587eea2ff1566 *data/bean.data.RData
+1f847c7e11cf88335f1270358ac10f36 *man/bean.data.Rd
+3a494a133c56354561ddcdd71c368a6e *man/fox.Rd
+fb6849d274bb2129e4be8037c59aa41e *man/kang.Rd
+5e3a9bb8959ffac3f4ebcd26a517a81b *man/nahu.Rd
+986db667971f33a4fa64700366096cb5 *man/phenability-package.Rd
+2cc95870cfb456143432c9f92426171c *man/thsu.Rd
