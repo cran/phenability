@@ -1,6 +1,5 @@
-kang <- 
-function (data){
-  
+kang <-
+function (data,interaction=FALSE){
   a <- nrow(data)
   b <- ncol(data)
   data.m <- as.matrix(data)
@@ -19,18 +18,41 @@ function (data){
   rank.sum <- rank.y + rank.v
   rank.sum <- as.data.frame(rank.sum)
   
-  hist(data.m, prob=T,breaks=sqrt(l.data), xlab="Data",main="Diagnostic Graph", border=c("green"))
-  densi.d <- density(data.m)
-  lines(density(data.m,bw="SJ-ste"))
-  set.seed(l.data)
-  z <- rnorm(l.data, mean=mean(data.m), sd=sd(data.m))
-  densi.s <- density(z)
-  lines(density(z) , col=2)
-  legend(summary(densi.d$x)[5],max(densi.d$y),  c('data', 'normal.dist'), lty=1,col=c(1,2))
+  means <- round(as.vector(rowMeans(data)),digits=4)
+  result <- as.data.frame(cbind(rownames(data),means,rank.y,rank.v,rank.sum))
+  colnames(result) <- c("Gen","Mean","Rank.Y","Rank.VAR","rank.sum")
   
-  means <- as.vector(rowMeans(data))
-  result <- cbind(rownames(data),means,rank.y,rank.v,rank.sum)
-  colnames(result) <- c("Gen","Mean","(Rank PROD)","(Rank VAR)","(RS-rank sum)")
+  rank.y <- apply(-data,2,rank)
+  ranks.sum.y <- apply(rank.y,1,sum)
+  sd.rank = round(apply(rank.y,1,sd),digits=4)
+  ranks.y = data.frame(rank.y,ranks.sum.y,sd.rank)
+  colnames(ranks.y) = c(colnames(rank.y),"Sum", "Sd")
+  cor.rank.y <- round(cor(ranks.y, method="pearson"), digits = 4)
+  geral.list <- list("Kang"=result,"Ranks"=ranks.y,"Correlations"=cor.rank.y)
+  
+  if(interaction){
+    amb1 = data.frame(data[1:nrow(data),1])
+    colnames(amb1) = "amb"
+    ambs = amb1
+    amb2 <- NULL
+    for(j in 2:ncol(data)){
+      
+      amb2 = data.frame(data[1:nrow(data),j])
+      colnames(amb2) = "amb"
+      ambs = rbind(ambs, amb2)    
+    }
+    
+    gen <- rep(1:nrow(data),ncol(data))
+    env <- rep(1:ncol(data),each=nrow(data))
+    intera.data <- data.frame(gen,env,ambs)
+    interaction.plot(reorder(factor(intera.data$env),intera.data$amb,mean),
+                     intera.data$gen,intera.data$amb,legend = F, type="l",
+                     trace.label = deparse(substitute(intera.data$gen)),
+                     col = 1:nrow(data),xpd = NULL,xtick = F,cex.axis = 0.6,
+                     ylab="Response", 
+                     xlab="Environment")
+    
+  }
   
   rs <- as.numeric(result[,5])
   plot(result[,2],result[,5],pch=19,cex=0.5,main="Means x Rank Sum",
@@ -42,5 +64,5 @@ function (data){
   origin(m)
   
   
-  return(result)
+  return(geral.list)
 }

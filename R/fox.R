@@ -1,13 +1,12 @@
-fox <- function(data){
-   
+fox <-
+function(data, interaction=FALSE){
   a <- nrow(data)
   b <- ncol(data)
-  data.m <- as.matrix(data)
+  data.m <- as.data.frame(data)
   l.data <- length (data.m)  
   ranks <- matrix(NA,a,b)
-  y <- NULL
-  k <- matrix(NA)
-  k2 <- matrix(NA) 
+  y <- numeric()
+  k <- numeric()
   for(i in 1:nrow(data.m)){
     for (j in 1:ncol(data.m)){
       
@@ -16,25 +15,44 @@ fox <- function(data){
     
     y <- which(ranks[i,] <= 3)
     k[i] <- length(y)
-    k[i] <- as.data.frame(k[i])
-    k2[i] <- as.matrix(k[i])
-    k2 <- as.numeric(k2[i])
+    
     
   }
-  hist(data.m, prob=T,breaks=sqrt(l.data), xlab="Data",main="Diagnostic Graph", border=c("green"))
-  densi.d <- density(data.m)
-  lines(density(data.m,bw="SJ-ste"))
-  set.seed(l.data)
-  z <- rnorm(l.data, mean=mean(data.m), sd=sd(data.m))
-  densi.s <- density(z)
-  lines(density(z) , col=2)
-  legend(summary(densi.d$x)[5],max(densi.d$y),  c('data', 'normal.dist'), lty=1,col=c(1,2))
-  
-  means <- as.vector(rowMeans(data))
-  result <- cbind(rownames(data),means,k)
+  means <- round(as.numeric(rowMeans(data)),digits=4)
+  result <- as.data.frame(cbind(rownames(data),means,k))
   colnames(result) <- c("Gen","Mean", "TOP")
   
-  result.g <- cbind(rownames(data),means,k2)
+  rank.y <- apply(-data,2,rank)
+  ranks.sum.y <- apply(rank.y,1,sum)
+  sd.rank = round(apply(rank.y,1,sd),digits=4)
+  ranks.y = data.frame(rank.y,ranks.sum.y,sd.rank)
+  colnames(ranks.y) = c(colnames(rank.y),"Sum", "Sd")
+  cor.rank.y <- round(cor(ranks.y, method="pearson"), digits = 4)
+  geral.list <- list("Fox"=result,"Ranks"=ranks.y,"Correlations"=cor.rank.y)
+  
+  if(interaction){
+    amb1 = data.frame(data[1:nrow(data),1])
+    colnames(amb1) = "amb"
+    ambs = amb1
+    amb2 <- NULL
+    for(j in 2:ncol(data)){
+      
+      amb2 = data.frame(data[1:nrow(data),j])
+      colnames(amb2) = "amb"
+      ambs = rbind(ambs, amb2)    
+    }
+    
+    gen <- rep(1:nrow(data),ncol(data))
+    env <- rep(1:ncol(data),each=nrow(data))
+    intera.data <- data.frame(gen,env,ambs)
+    interaction.plot(reorder(factor(intera.data$env),intera.data$amb,mean),
+                     intera.data$gen,intera.data$amb,legend = F, type="l",
+                     trace.label = deparse(substitute(intera.data$gen)),
+                     col = 1:nrow(data),xpd = NULL,xtick = F,cex.axis = 0.6,
+                     ylab="Response", 
+                     xlab="Environment")
+    
+  }
   
   top <- as.numeric(result[,3])
   plot(means,top,pch=19,cex=0.5,main="Means x TOP",xlab=expression(Mean[Phenotypic]),
@@ -44,6 +62,6 @@ fox <- function(data){
   textxy(means,top,1:a,m=m,cex=1, col="blue")
   origin(m)
   
-  return(result)
+  return(geral.list)
   
 }

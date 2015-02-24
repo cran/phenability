@@ -4,14 +4,14 @@
 \docType{package}
 \title{Nonparametric Stability Analysis}
 \description{
-This package is an alternative to carrying out phenotypic adaptability and stability analyses, taking into account nonparametric statistics, and can be used as a robust approach, and less sensitive to departures from common genotypic, environmental, and GxE effects data assumptions (e.g., normal distribution of errors).
+An alternative to carrying out phenotypic adaptability and stability analysis, taking into account nonparametric statistics. Can be used as a robust approach, and less sensitive to departures from common genotypic, environmental, and GxE effects data assumptions (e.g., normal distribution of errors).
 }
 \details{
 \tabular{ll}{
 Package: \tab phenability\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2014-04-22\cr
+Version: \tab 2.0\cr
+Date: \tab 2015-02-24\cr
 License: \tab GPU-3\cr
 }
 The package can be applied to MET (multienvironment trials) data containing the phenotypic mean of genotype x environment (dataframe with genotypes by rows and environments into columns) and performs nonparametric analysis according to for criteria: Huehn (1979), and Nassar and Huehn (1987); Kang's (1988); Fox et al. (1990) and; Thennarasu's (1995).
@@ -20,6 +20,7 @@ The package can be applied to MET (multienvironment trials) data containing the 
 \arguments{
   \item{function}{ nahu, kang, fox, or thsu}
   \item{data}{ A numeric data.frame with fenotypic means values of MET, and genotypes and environments by rows and columns, respectively.}
+  \item{interaction}{do a interaction plot or not (FALSE = no interaction plot output, TRUE = draws a interaction plot between genotypes and environments).}
 }
 
 \author{
@@ -34,9 +35,17 @@ bean.data
 x <- bean.data
 
 fox(x)
+fox(x, interaction=TRUE)
+
 kang(x)
+kang(x, interaction=TRUE)
+
 thsu(x)
+thsu(x, interaction=TRUE)
+
 nahu(x)
+nahu(x, interaction=TRUE)
+
 }
 
 \references{
